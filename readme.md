@@ -36,8 +36,8 @@ $ matlab -r -nodisplay scripts/genJPEG.m
 ## Pretrained models
 Pretrained models can be downloaded from [Baidu Pan](https://pan.baidu.com/s/1G2N_PVgOi0vTgTN5MFQujQ) (td5z).
 
-## Train/Test
-Super-resolution
+## Super-resolution
+Train/Test
 ```sh
 $ cd TSSN/Super-resolution/src
 $ sh demo.sh
@@ -47,9 +47,9 @@ To test all the benchmarks
 $ cd TSSN/Super-resolution/src
 $ ./benchmark.sh 2 tssn_x2 tssn 0   [scale model_dir model gpu_id]
 ```
-Denoising
+## Denoising
 
-JPEG deblocking
+## JPEG deblocking
 
 ## Acknowledgements
 We thank [Sanghyun Son](https://github.com/thstkdgus35) for the code base in [`EDSR-PyTorch`](https://github.com/thstkdgus35/EDSR-PyTorch).
