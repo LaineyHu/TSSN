@@ -24,7 +24,6 @@ class Data:
                 print('data.' + module_name.lower())
                 #m = import_module('data.' + module_name.lower())
                 m = import_module("data.div2k")
-                print("world")
                 datasets.append(getattr(m, module_name)(args, name=d))
             self.loader_train = MSDataLoader(
                 args,
@@ -35,7 +34,6 @@ class Data:
             )
 
         self.loader_test = []
-        pdb.set_trace()
         for d in args.data_test:
             if d in ['Set5', 'Set14', 'B100', 'Urban100', 'Manga109']:
                 m = import_module('data.benchmark')

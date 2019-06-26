@@ -101,8 +101,6 @@ class TSSN(nn.Module):
 
         # Global Feature Fusion
         self.GFF = nn.Sequential(*[
-            common.GELayer(),
-            common.SELayer(2*G0),
             nn.Conv2d(2*G0, G0, kSize, padding=(kSize-1)//2, stride=1)
         ])
 

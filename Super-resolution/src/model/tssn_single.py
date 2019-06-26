@@ -92,10 +92,6 @@ class TSSN(nn.Module):
         self.branch2 = nn.Sequential(*[
             SRB(growRate0 = G0, growRate = G, nConvLayers = C),
             SRB(growRate0 = G0, growRate = G, nConvLayers = C),
-            SRB(growRate0 = G0, growRate = G, nConvLayers = C),
-            SRB(growRate0 = G0, growRate = G, nConvLayers = C),
-            SRB(growRate0 = G0, growRate = G, nConvLayers = C),
-            SRB(growRate0 = G0, growRate = G, nConvLayers = C),
             SRB(growRate0 = G0, growRate = G, nConvLayers = C)
         ])
 
@@ -144,7 +140,7 @@ class TSSN(nn.Module):
 
         branch1 = self.branch1(x)
         #misc.imsave("tmp/branch1.png", feature_norm(torch.squeeze(torch.mean(branch1*branch1, dim=1)).cpu().numpy()))
-        branch2 = self.branch2(x)
+        branch2 = self.branch2(branch1)
         #misc.imsave("tmp/branch2.png", feature_norm(torch.squeeze(torch.mean(branch2*branch2, dim=1)).cpu().numpy()))
 
         x = self.GFF(torch.cat([branch1,branch2],1))

@@ -84,8 +84,6 @@ class Trainer():
             torch.zeros(1, len(self.loader_test), len(self.scale))
         )
         self.model.eval()
-        
-        #xxxx = []
 
         timer_test = utility.timer()
         if self.args.save_results: self.ckp.begin_background()
@@ -93,19 +91,15 @@ class Trainer():
             for idx_scale, scale in enumerate(self.scale):
                 d.dataset.set_scale(idx_scale)
                 for lr, hr, filename, _ in tqdm(d, ncols=80):
-                #for lr, hr, filename, _ in d:
                     lr, hr = self.prepare(lr, hr)
                     
                     sr = self.model(lr, idx_scale)
                     sr = utility.quantize(sr, self.args.rgb_range)
 
                     save_list = [sr]
-                    xx = utility.calc_psnr(
+                    self.ckp.log[-1, idx_data, idx_scale] += utility.calc_psnr(
                         sr, hr, scale, self.args.rgb_range, dataset=d
                     )
-                    self.ckp.log[-1, idx_data, idx_scale] += xx
-                
-                    #xxxx.append(xx)
 
                     if self.args.save_gt:
                         save_list.extend([lr, hr])
@@ -113,7 +107,6 @@ class Trainer():
                     if self.args.save_results:
                         self.ckp.save_results(d, filename[0], save_list, scale)
                     torch.cuda.empty_cache()
-                    #del lr,hr,sr,save_list,xx
 
                 self.ckp.log[-1, idx_data, idx_scale] /= len(d)
                 best = self.ckp.log.max(0)
@@ -127,10 +120,6 @@ class Trainer():
                     )
                 )
 
-            #torch.cuda.empty_cache()
-
-        #xxxx = np.array(xxxx)
-        #np.save('0+4.npy',xxxx)
 
         self.ckp.write_log('Forward: {:.2f}s\n'.format(timer_test.toc()))
         self.ckp.write_log('Saving...')

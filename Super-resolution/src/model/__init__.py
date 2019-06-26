@@ -32,7 +32,8 @@ class Model(nn.Module):
             ckp.get_path('model'),
             pre_train=args.pre_train,
             resume=args.resume,
-            cpu=args.cpu
+            cpu=args.cpu,
+            scale=args.scale
         )
         print(self.model, file=ckp.log_file)
         print(sum(x.numel() for x in self.model.parameters())/1024/1024)
@@ -76,7 +77,7 @@ class Model(nn.Module):
 
         for s in save_dirs: torch.save(target.state_dict(), s)
 
-    def load(self, apath, pre_train='', resume=-1, cpu=False):
+    def load(self, apath, pre_train='', resume=-1, cpu=False, scale=1):
         if cpu:
             kwargs = {'map_location': lambda storage, loc: storage}
         else:
@@ -106,20 +107,22 @@ class Model(nn.Module):
                 os.path.join(apath, 'model_{}.pt'.format(resume)),
                 **kwargs
             )
-
-        if load_from: self.get_model().load_state_dict(load_from, strict=False)
-        '''
+        if scale == 1 or scale == 2:
         if load_from:
-            model_dict = self.get_model().state_dict()
-
-            #forbidden = ['UPNet.0.weight', 'UPNet.0.bias']     # for x3
-            #forbidden = ['UPNet.2.weight', 'UPNet.2.bias']     # for x4
-            forbidden = ['UPNet.4.weight', 'UPNet.4.bias']      # for x8
-            load_from = {k:v for k,v in load_from.items() if k not in forbidden}
-
-            model_dict.update(load_from)
-            self.get_model().load_state_dict(model_dict, strict=False)
-        '''
+            if scale == 1 or scale == 2: 
+                self.get_model().load_state_dict(load_from, strict=False)
+            elif scale == 3 or scale == 4 or scale == 8:
+                model_dict = self.get_model().state_dict()
+                if scale == 3:
+                    forbidden = ['UPNet.0.weight', 'UPNet.0.bias']     # for x3
+                elif scale == 4:
+                    forbidden = ['UPNet.2.weight', 'UPNet.2.bias']     # for x4
+                elif scale == 8 :
+                    forbidden = ['UPNet.4.weight', 'UPNet.4.bias']      # for x8
+                
+                load_from = {k:v for k,v in load_from.items() if k not in forbidden}
+                model_dict.update(load_from)
+                self.get_model().load_state_dict(model_dict, strict=False)
 
     def forward_chop(self, *args, shave=10, min_size=160000):
         if self.input_large:
