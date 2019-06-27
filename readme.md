@@ -56,7 +56,7 @@ $ sh demo.sh
 To test all the benchmarks
 ```sh
 $ cd TSSN/ColorDN
-$ ./benchmark.sh 50 colorDN_N50 tssn_ir 0   [scale model_dir model gpu_id]
+$ ./benchmark.sh 50 colorDN_x50 tssn_ir 0   [scale model_dir model gpu_id]
 ```
 Grey-scale image denoising Train/Test
 ```sh
@@ -66,7 +66,7 @@ $ sh demo.sh
 To test all the benchmarks
 ```sh
 $ cd TSSN/GreyDN
-$ ./benchmark.sh 1 greyDN_N50 tssn_ir 0   [scale model_dir model gpu_id]
+$ ./benchmark.sh 1 greyDN_x50 tssn_ir 0   [scale model_dir model gpu_id]
 ```
 ## JPEG deblocking
 Train/Test
@@ -77,7 +77,7 @@ $ sh demo.sh
 To test all the benchmarks
 ```sh
 $ cd TSSN/Deblock
-$ ./benchmark.sh 1 Deblock_N50 tssn_ir 0   [scale model_dir model gpu_id]
+$ ./benchmark.sh 1 Deblock_x10 tssn_ir 0   [scale model_dir model gpu_id]
 ```
 ## Acknowledgements
 We thank [Sanghyun Son](https://github.com/thstkdgus35) for the code base in [`EDSR-PyTorch`](https://github.com/thstkdgus35/EDSR-PyTorch).

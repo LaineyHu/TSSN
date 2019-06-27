@@ -1,12 +1,6 @@
-# Residual Dense Network for Image Super-Resolution
-# https://arxiv.org/abs/1802.08797
-
-from model import common
-
 import torch
 import torch.nn as nn
-from .se_module import SELayer
-from .ge_module import GELayer
+from model import common
 
 import cv2
 import numpy as np
@@ -16,7 +10,7 @@ def feature_norm(x, eps=1e-8):
     return (x-x.min()) / (x.max()-x.min()+eps)
 
 def make_model(args, parent=False):
-    return RDN(args)
+    return TSSN(args)
 
 def expFetch(lst):
     nums = len(lst)
@@ -27,9 +21,9 @@ def expFetch(lst):
         i *= 2
     return res
 
-class RDB_Conv(nn.Module):
+class SRB_Conv(nn.Module):
     def __init__(self, inChannels, growRate, kSize=3):
-        super(RDB_Conv, self).__init__()
+        super(SRB_Conv, self).__init__()
         Cin = inChannels
         G  = growRate
         self.conv = nn.Sequential(*[
@@ -40,9 +34,9 @@ class RDB_Conv(nn.Module):
     def forward(self, x):
         return self.conv(x)
 
-class RDB(nn.Module):
+class SRB(nn.Module):
     def __init__(self, growRate0, growRate, nConvLayers, kSize=3):
-        super(RDB, self).__init__()
+        super(SRB, self).__init__()
         G0 = growRate0
         G  = growRate
         self.C  = nConvLayers
@@ -51,7 +45,7 @@ class RDB(nn.Module):
         
         for i in range(self.C):
             nChannels = sum(self.expFetch(self.prevChannels))
-            unit = RDB_Conv(nChannels, G)
+            unit = SRB_Conv(nChannels, G)
             self.add_module("block-%d" % (i+1), unit)
             self.prevChannels.append(G)
         
@@ -71,22 +65,19 @@ class RDB(nn.Module):
 
         return self.LFF(x) + x_tmp
 
-class RDN(nn.Module):
+class TSSN(nn.Module):
     def __init__(self, args):
-        super(RDN, self).__init__()
+        super(TSSN, self).__init__()
         r = args.scale[0]
         G0 = args.G0
-        kSize = args.RDNkSize
+        kSize = args.TSSNkSize
         
         rgb_mean = (0.4488, 0.4371, 0.4040)
         rgb_std = (1.0, 1.0, 1.0)
         #self.sub_mean = common.MeanShift(args.rgb_range, rgb_mean, rgb_std)
 
-        # number of RDB blocks, conv layers, out channels
-        self.D, C, G = {
-            'A': (20, 6, 32),
-            'B': (16, 16, 64),
-        }[args.RDNconfig]
+        C = 16
+        G = 64
 
         # Shallow feature extraction net
         self.SFENet1 = nn.Conv2d(args.n_colors, G0, kSize, padding=(kSize-1)//2, stride=1)
@@ -94,25 +85,25 @@ class RDN(nn.Module):
 
         #multi-branch
         self.branch1 = nn.Sequential(*[
-            RDB(growRate0 = G0, growRate = G, nConvLayers = C),
-            RDB(growRate0 = G0, growRate = G, nConvLayers = C),
-            RDB(growRate0 = G0, growRate = G, nConvLayers = C),
-            RDB(growRate0 = G0, growRate = G, nConvLayers = C)
+            SRB(growRate0 = G0, growRate = G, nConvLayers = C),
+            SRB(growRate0 = G0, growRate = G, nConvLayers = C),
+            SRB(growRate0 = G0, growRate = G, nConvLayers = C),
+            SRB(growRate0 = G0, growRate = G, nConvLayers = C)
         ])
         self.branch2 = nn.Sequential(*[
-            RDB(growRate0 = G0, growRate = G, nConvLayers = C),
-            RDB(growRate0 = G0, growRate = G, nConvLayers = C),
-            RDB(growRate0 = G0, growRate = G, nConvLayers = C),
-            RDB(growRate0 = G0, growRate = G, nConvLayers = C),
-            RDB(growRate0 = G0, growRate = G, nConvLayers = C),
-            RDB(growRate0 = G0, growRate = G, nConvLayers = C),
-            RDB(growRate0 = G0, growRate = G, nConvLayers = C)
+            SRB(growRate0 = G0, growRate = G, nConvLayers = C),
+            SRB(growRate0 = G0, growRate = G, nConvLayers = C),
+            SRB(growRate0 = G0, growRate = G, nConvLayers = C),
+            SRB(growRate0 = G0, growRate = G, nConvLayers = C),
+            SRB(growRate0 = G0, growRate = G, nConvLayers = C),
+            SRB(growRate0 = G0, growRate = G, nConvLayers = C),
+            SRB(growRate0 = G0, growRate = G, nConvLayers = C)
         ])
 
         # Global Feature Fusion
         self.GFF = nn.Sequential(*[
-            GELayer(),
-            SELayer(2*G0),
+            common.GELayer(),
+            common.SELayer(2*G0),
             nn.Conv2d(2*G0, G0, kSize, padding=(kSize-1)//2, stride=1)
         ])
 

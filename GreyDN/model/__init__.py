@@ -16,7 +16,7 @@ class Model(nn.Module):
 
         self.scale = args.scale
         self.idx_scale = 0
-        self.input_large = (args.model == 'VDSR')
+        self.input_large = (args.model == 'TSSN')
         self.self_ensemble = args.self_ensemble
         self.chop = args.chop
         self.precision = args.precision
@@ -121,16 +121,7 @@ class Model(nn.Module):
             )
 
         if load_from: self.get_model().load_state_dict(load_from, strict=False)
-        '''
-        if load_from:
-            model_dict = self.get_model().state_dict()
-            
-            forbidden = ['UPNet.4.weight', 'UPNet.4.bias']
-            load_from = {k:v for k,v in load_from.items() if k not in forbidden}
 
-            model_dict.update(load_from)
-            self.get_model().load_state_dict(model_dict, strict=False)
-        '''
 
     def forward_chop(self, *args, shave=10, min_size=160000):
         if self.input_large:
