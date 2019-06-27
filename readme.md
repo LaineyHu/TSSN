@@ -39,18 +39,46 @@ Pretrained models can be downloaded from [Baidu Pan](https://pan.baidu.com/s/1G2
 ## Super-resolution
 Train/Test
 ```sh
-$ cd TSSN/Super-resolution/src
+$ cd TSSN/Super-resolution
 $ sh demo.sh
 ```
 To test all the benchmarks
 ```sh
-$ cd TSSN/Super-resolution/src
+$ cd TSSN/Super-resolution
 $ ./benchmark.sh 2 tssn_x2 tssn 0   [scale model_dir model gpu_id]
 ```
 ## Denoising
-
+Color image denoising Train/Test
+```sh
+$ cd TSSN/ColorDN
+$ sh demo.sh
+```
+To test all the benchmarks
+```sh
+$ cd TSSN/ColorDN
+$ ./benchmark.sh 50 colorDN_N50 tssn_ir 0   [scale model_dir model gpu_id]
+```
+Grey-scale image denoising Train/Test
+```sh
+$ cd TSSN/GreyDN
+$ sh demo.sh
+```
+To test all the benchmarks
+```sh
+$ cd TSSN/GreyDN
+$ ./benchmark.sh 1 greyDN_N50 tssn_ir 0   [scale model_dir model gpu_id]
+```
 ## JPEG deblocking
-
+Train/Test
+```sh
+$ cd TSSN/Deblock
+$ sh demo.sh
+```
+To test all the benchmarks
+```sh
+$ cd TSSN/Deblock
+$ ./benchmark.sh 1 Deblock_N50 tssn_ir 0   [scale model_dir model gpu_id]
+```
 ## Acknowledgements
 We thank [Sanghyun Son](https://github.com/thstkdgus35) for the code base in [`EDSR-PyTorch`](https://github.com/thstkdgus35/EDSR-PyTorch).
 
