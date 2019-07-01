@@ -18,7 +18,7 @@ class SRData(data.Dataset):
         self.split = 'train' if train else 'test'
         self.do_eval = True
         self.benchmark = benchmark
-        self.input_large = (args.model == 'VDSR')
+        self.input_large = (args.model == 'TSSN')
         self.scale = args.scale
         self.idx_scale = 0
         self.degree = args.degree.split('/')
@@ -107,7 +107,7 @@ class SRData(data.Dataset):
         self.dir_lr = os.path.join(self.apath, 'LR_bicubic')
         if self.input_large: self.dir_lr += 'L'
         #self.ext = ('.png', '.png')
-        self.ext = ('.png', '.jpg')   #CAR
+        self.ext = ('.png', '.jpg')   #deblocking
 
     def _name_hrbin(self):
         return os.path.join(

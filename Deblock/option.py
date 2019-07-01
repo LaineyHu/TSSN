@@ -1,12 +1,7 @@
 import argparse
 import template
 
-parser = argparse.ArgumentParser(description='EDSR and MDSR')
-
-parser.add_argument('--debug', action='store_true',
-                    help='Enables debug mode')
-parser.add_argument('--template', default='.',
-                    help='You can set various templates in option.py')
+parser = argparse.ArgumentParser(description='TSSN')
 
 # Hardware specifications
 parser.add_argument('--n_threads', type=int, default=6,
@@ -21,7 +16,7 @@ parser.add_argument('--seed', type=int, default=1,
                     help='random seed')
 
 # Data specifications
-parser.add_argument('--dir_data', type=str, default='../../dataset',    #DIV2K ../..   #benchmark ..
+parser.add_argument('--dir_data', type=str, default='../dataset',    #DIV2K ../..   #benchmark ..
                     help='dataset directory')
 parser.add_argument('--dir_demo', type=str, default='../test',
                     help='demo image directory')
@@ -72,19 +67,10 @@ parser.add_argument('--precision', type=str, default='single',
                     choices=('single', 'half'),
                     help='FP precision for test (single | half)')
 
-# Option for Residual dense network (RDN)
 parser.add_argument('--G0', type=int, default=64,
-                    help='default number of filters. (Use in RDN)')
-parser.add_argument('--RDNkSize', type=int, default=3,
-                    help='default kernel size. (Use in RDN)')
-parser.add_argument('--RDNconfig', type=str, default='B',
-                    help='parameters config of RDN. (Use in RDN)')
-
-# Option for Residual channel attention network (RCAN)
-parser.add_argument('--n_resgroups', type=int, default=10,
-                    help='number of residual groups')
-parser.add_argument('--reduction', type=int, default=16,
-                    help='number of feature maps reduction')
+                    help='default number of filters. (Use in TSSN)')
+parser.add_argument('--TSSNkSize', type=int, default=3,
+                    help='default kernel size. (Use in TSSN)')
 
 # Training specifications
 parser.add_argument('--reset', action='store_true',
@@ -101,8 +87,6 @@ parser.add_argument('--self_ensemble', action='store_true',
                     help='use self-ensemble method for test')
 parser.add_argument('--test_only', action='store_true',
                     help='set this option to test the model')
-parser.add_argument('--gan_k', type=int, default=1,
-                    help='k value for adversarial loss')
 
 # Optimization specifications
 parser.add_argument('--lr', type=float, default=1e-4,
@@ -150,7 +134,6 @@ parser.add_argument('--save_gt', action='store_true',
                     help='save low-resolution and high-resolution images together')
 
 args = parser.parse_args()
-template.set_template(args)
 
 args.scale = list(map(lambda x: int(x), args.scale.split('+')))
 args.data_train = args.data_train.split('+')

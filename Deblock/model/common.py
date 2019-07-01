@@ -1,13 +1,5 @@
-import math
-
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
-
-def default_conv(in_channels, out_channels, kernel_size, bias=True):
-    return nn.Conv2d(
-        in_channels, out_channels, kernel_size,
-        padding=(kernel_size//2), bias=bias)
+from torch import nn
 
 class MeanShift(nn.Conv2d):
     def __init__(
@@ -20,63 +12,31 @@ class MeanShift(nn.Conv2d):
         self.bias.data = sign * rgb_range * torch.Tensor(rgb_mean) / std
         self.requires_grad = False
 
-class BasicBlock(nn.Sequential):
-    def __init__(
-        self, conv, in_channels, out_channels, kernel_size, stride=1, bias=False,
-        bn=True, act=nn.ReLU(True)):
-
-        m = [conv(in_channels, out_channels, kernel_size, bias=bias)]
-        if bn: m.append(nn.BatchNorm2d(out_channels))
-        if act is not None: m.append(act)
-        super(BasicBlock, self).__init__(*m)
-
-class ResBlock(nn.Module):
-    def __init__(
-        self, conv, n_feats, kernel_size,
-        bias=True, bn=False, act=nn.ReLU(True), res_scale=1):
-
-        super(ResBlock, self).__init__()
-        m = []
-        for i in range(2):
-            m.append(conv(n_feats, n_feats, kernel_size, bias=bias))
-            if bn: m.append(nn.BatchNorm2d(n_feats))
-            if i == 0: m.append(act)
-
-        self.body = nn.Sequential(*m)
-        self.res_scale = res_scale
+class SELayer(nn.Module):
+    def __init__(self, channel, reduction=16):
+        super(SELayer, self).__init__()
+        self.avg_pool = nn.AdaptiveAvgPool2d(1)
+        self.fc = nn.Sequential(
+                nn.Linear(channel, channel // reduction),
+                nn.ReLU(inplace=True),
+                nn.Linear(channel // reduction, channel),
+                nn.Sigmoid()
+        )
 
     def forward(self, x):
-        res = self.body(x).mul(self.res_scale)
-        res += x
+        b, c, _, _ = x.size()
+        y = self.avg_pool(x).view(b, c)
+        y = self.fc(y).view(b, c, 1, 1)
+        return x * y
 
-        return res
+class GELayer(nn.Module):
+    def __init__(self):
+        super(GELayer, self).__init__()
+        self.sigmoid = nn.Sigmoid()
 
-class Upsampler(nn.Sequential):
-    def __init__(self, conv, scale, n_feats, bn=False, act=False, bias=True):
-
-        m = []
-        if (scale & (scale - 1)) == 0:    # Is scale = 2^n?
-            for _ in range(int(math.log(scale, 2))):
-                m.append(conv(n_feats, 4 * n_feats, 3, bias))
-                m.append(nn.PixelShuffle(2))
-                if bn: m.append(nn.BatchNorm2d(n_feats))
-
-                if act == 'relu':
-                    m.append(nn.ReLU(True))
-                elif act == 'prelu':
-                    m.append(nn.PReLU(n_feats))
-
-        elif scale == 3:
-            m.append(conv(n_feats, 9 * n_feats, 3, bias))
-            m.append(nn.PixelShuffle(3))
-            if bn: m.append(nn.BatchNorm2d(n_feats))
-
-            if act == 'relu':
-                m.append(nn.ReLU(True))
-            elif act == 'prelu':
-                m.append(nn.PReLU(n_feats))
-        else:
-            raise NotImplementedError
-
-        super(Upsampler, self).__init__(*m)
-
+    def forward(self, x):
+        _,_,h,w = x.size()
+        y = nn.functional.adaptive_avg_pool2d(x,(h//4, w//4))
+        y = nn.functional.interpolate(y,(h,w))
+        y = self.sigmoid(y)
+        return x * y

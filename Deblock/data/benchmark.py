@@ -22,7 +22,7 @@ class Benchmark(srdata.SRData):
             self.dir_lr = os.path.join(self.apath, 'LR_bicubicL')
         else:
             #self.dir_lr = os.path.join(self.apath, 'GreyNoise')
-            self.dir_lr = os.path.join(self.apath, 'CAR')
+            self.dir_lr = os.path.join(self.apath, 'Deblock')
             #self.dir_lr = os.path.join(self.apath, 'ColorNoise')
             #self.dir_lr = os.path.join(self.apath, 'LR_bicubic')
         #self.ext = ('', '.png')

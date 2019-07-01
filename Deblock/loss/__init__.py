@@ -28,34 +28,16 @@ class Loss(nn.modules.loss._Loss):
                 loss_function = nn.MSELoss()
             elif loss_type == 'L1':
                 loss_function = nn.L1Loss()
-            elif loss_type == 'GE_l1':
-                loss_function = nn.ModuleList()
-                loss_function.append(nn.L1Loss(size_average=False,reduce=False))
-                loss_function.append(GELayer())
             elif loss_type == 'L1_softmax':
                 loss_function = nn.ModuleList()
                 loss_function.append(nn.L1Loss(size_average=False,reduce=False))
                 loss_function.append(L1_softmax_layer())
-            elif loss_type.find('VGG') >= 0:
-                module = import_module('loss.vgg')
-                loss_function = getattr(module, 'VGG')(
-                    loss_type[3:],
-                    rgb_range=args.rgb_range
-                )
-            elif loss_type.find('GAN') >= 0:
-                module = import_module('loss.adversarial')
-                loss_function = getattr(module, 'Adversarial')(
-                    args,
-                    loss_type
-                )
 
             self.loss.append({
                 'type': loss_type,
                 'weight': float(weight),
                 'function': loss_function}
             )
-            if loss_type.find('GAN') >= 0:
-                self.loss.append({'type': 'DIS', 'weight': 1, 'function': None})
 
         if len(self.loss) > 1:
             self.loss.append({'type': 'Total', 'weight': 0, 'function': None})

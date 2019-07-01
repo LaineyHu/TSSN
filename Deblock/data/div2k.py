@@ -30,6 +30,6 @@ class DIV2K(srdata.SRData):
         #self.dir_hr = os.path.join(self.apath, 'Grey')
         #self.dir_lr = os.path.join(self.apath, 'ColorNoise') # DIV2K_train_LR_bicubic
         #self.dir_lr = os.path.join(self.apath, 'GreyNoise') # DIV2K_train_LR_bicubic
-        self.dir_lr = os.path.join(self.apath, 'CAR') # DIV2K_train_LR_bicubic
+        self.dir_lr = os.path.join(self.apath, 'Deblock') # DIV2K_train_LR_bicubic
         if self.input_large: self.dir_lr += 'L'
 

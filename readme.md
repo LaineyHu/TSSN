@@ -77,7 +77,7 @@ $ sh demo.sh
 To test all the benchmarks
 ```sh
 $ cd TSSN/Deblock
-$ ./benchmark.sh 1 Deblock_x10 tssn_ir 0   [scale model_dir model gpu_id]
+$ ./benchmark.sh 1 deblock_x10 tssn_ir 0   [scale model_dir model gpu_id]
 ```
 ## Acknowledgements
 We thank [Sanghyun Son](https://github.com/thstkdgus35) for the code base in [`EDSR-PyTorch`](https://github.com/thstkdgus35/EDSR-PyTorch).
