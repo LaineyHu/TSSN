@@ -2,7 +2,8 @@
 
 ## Requirement and Dependency
 Python 3.6  
-Pytorch == 0.4.0  
+Pytorch == 0.4.1  
+cuda 9.0
 numpy  
 skimage  
 imageio  
