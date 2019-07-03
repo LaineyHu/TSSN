@@ -16,7 +16,6 @@ checkpoint = utility.checkpoint(args)
 
 
 if checkpoint.ok:
-    print("hello")
     loader = data.Data(args)
     model = model.Model(args, checkpoint)
     loss = loss.Loss(args, checkpoint) if not args.test_only else None

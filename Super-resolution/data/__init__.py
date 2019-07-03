@@ -21,7 +21,6 @@ class Data:
             for d in args.data_train:
                 module_name = d if d.find('DIV2K-Q') < 0 else 'DIV2KJPEG'
                 import_module("data.div2k")
-                print('data.' + module_name.lower())
                 #m = import_module('data.' + module_name.lower())
                 m = import_module("data.div2k")
                 datasets.append(getattr(m, module_name)(args, name=d))

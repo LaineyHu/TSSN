@@ -108,15 +108,16 @@ class Model(nn.Module):
                 **kwargs
             )
         if load_from:
-            if scale == 1 or scale == 2: 
+            scale_v = scale[0]
+            if scale_v == 1 or scale_v == 2: 
                 self.get_model().load_state_dict(load_from, strict=False)
-            elif scale == 3 or scale == 4 or scale == 8:
+            elif scale_v == 3 or scale_v == 4 or scale_v == 8:
                 model_dict = self.get_model().state_dict()
-                if scale == 3:
+                if scale_v == 3:
                     forbidden = ['UPNet.0.weight', 'UPNet.0.bias']     # for x3
-                elif scale == 4:
+                elif scale_v == 4:
                     forbidden = ['UPNet.2.weight', 'UPNet.2.bias']     # for x4
-                elif scale == 8 :
+                elif scale_v == 8 :
                     forbidden = ['UPNet.4.weight', 'UPNet.4.bias']      # for x8
                 
                 load_from = {k:v for k,v in load_from.items() if k not in forbidden}
