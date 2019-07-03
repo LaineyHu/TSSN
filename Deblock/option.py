@@ -1,5 +1,4 @@
 import argparse
-import template
 
 parser = argparse.ArgumentParser(description='TSSN')
 
