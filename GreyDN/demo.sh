@@ -7,7 +7,7 @@ python main.py --scale 1 --degree 50 --n_colors 1 --save greynoise_x50 --model t
 # python main.py --scale 1 --degree 50 --n_colors 1 --load greynoise_x50 --model tssn_ir --epochs 1000 --batch_size 16 --patch_size 48 --resume -1 --lr_decay 200 --data_test Kodak24 --loss "1*L1_softmax" --GPU_id "0"
 
 # restore from certain checkpoint
-# python main.py --scale 1 --degree 50 --n_colors 1 --save greynoise_restore_x50 --model tssn_ir --pre_train ../experiment/greynoise_x50/model/model_best.pt --epochs 1000 --batch_size 16 --patch_size 48 --resume 0 --lr_decay 200 --data_test Kodak24 --loss "1*L1_softmax" --GPU_id "0"
+# python main.py --scale 1 --degree 50 --n_colors 1 --save greynoise_restore_x50 --model tssn_ir --pre_train ../experiment/greynoise_x50/model/model_best.pt --epochs 1000 --batch_size 16 --patch_size 48 --resume 0 --lr_decay 200 --data_test Kodak24 --loss "1*L1_softmax" --GPU_id "0" --reset
 
 
 ###### test #######

@@ -69,12 +69,12 @@ def augment(*args, hflip=True, rot=True):
     rot90 = rot and random.random() < 0.5
 
     def _augment(img):
-        if hflip: img = img[:, ::-1, :]   #grey
-        #if hflip: img = img[:, ::-1]   #grey
-        if vflip: img = img[::-1, :, :]   #grey
-        #if vflip: img = img[::-1, :]   #grey
-        #if rot90: img = img.transpose(1, 0)
-        if rot90: img = img.transpose(1, 0, 2)
+        #if hflip: img = img[:, ::-1, :]   #grey
+        if hflip: img = img[:, ::-1]   #grey
+        #if vflip: img = img[::-1, :, :]   #grey
+        if vflip: img = img[::-1, :]   #grey
+        if rot90: img = img.transpose(1, 0)
+        #if rot90: img = img.transpose(1, 0, 2)
         
         return img
 
