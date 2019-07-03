@@ -38,9 +38,7 @@ class Loss(nn.modules.loss._Loss):
                 'weight': float(weight),
                 'function': loss_function}
             )
-            if loss_type.find('GAN') >= 0:
-                self.loss.append({'type': 'DIS', 'weight': 1, 'function': None})
-
+            
         if len(self.loss) > 1:
             self.loss.append({'type': 'Total', 'weight': 0, 'function': None})
 

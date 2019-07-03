@@ -2,6 +2,8 @@ import torch
 import torch.nn as nn
 from model import common
 
+import cv2
+import numpy as np
 from scipy import misc
 
 def feature_norm(x, eps=1e-8):
@@ -59,7 +61,7 @@ class SRB(nn.Module):
             out = self._modules["block-%d" %(i+1)](x)
             prev_outputs.append(out)
             fetch_outputs = self.expFetch(prev_outputs)
-            x = torch.cat(fetch_outputs, 1).contiguous()   
+            x = torch.cat(fetch_outputs, 1).contiguous() 
 
         return self.LFF(x) + x_tmp
 
@@ -74,7 +76,6 @@ class TSSN(nn.Module):
         rgb_std = (1.0, 1.0, 1.0)
         self.sub_mean = common.MeanShift(args.rgb_range, rgb_mean, rgb_std)
 
-        # number of SRB blocks, conv layers, out channels
         C = 16
         G = 64
 
@@ -112,7 +113,8 @@ class TSSN(nn.Module):
 
     def forward(self, x):
         f__0 = self.sub_mean(x)
-        f__1 = self.SFENet1(f__0)
+        #f__0 = x
+        f__1 = self.SFENet1(x)
         x  = self.SFENet2(f__1)
 
         branch1 = self.branch1(x)
@@ -126,3 +128,4 @@ class TSSN(nn.Module):
         x += f__0
 
         return self.add_mean(x)
+        #return x

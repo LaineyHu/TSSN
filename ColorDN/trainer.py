@@ -31,7 +31,6 @@ class Trainer():
         self.error_last = 1e8
 
     def train(self):
-        torch.set_grad_enabled(True)
         self.scheduler.step()
         self.loss.step()
         epoch = self.scheduler.last_epoch + 1
@@ -69,7 +68,6 @@ class Trainer():
                     self.loss.display_loss(batch),
                     timer_model.release(),
                     timer_data.release()))
-                break
 
             timer_data.tic()
 
@@ -84,8 +82,10 @@ class Trainer():
         self.ckp.add_log(
             torch.zeros(1, len(self.loader_test), len(self.scale))
         )
+        '''
         for pa in self.model.parameters():
             pa.requires_grad = False
+        '''
         self.model.eval()
 
         timer_test = utility.timer()
@@ -120,6 +120,7 @@ class Trainer():
                         best[1][idx_data, idx_scale] + 1
                     )
                 )
+            torch.cuda.empty_cache()
 
         self.ckp.write_log('Forward: {:.2f}s\n'.format(timer_test.toc()))
         self.ckp.write_log('Saving...')
@@ -131,6 +132,7 @@ class Trainer():
         self.ckp.write_log(
             'Total: {:.2f}s\n'.format(timer_test.toc()), refresh=True
         )
+
         torch.set_grad_enabled(True)
 
     def prepare(self, *args):
