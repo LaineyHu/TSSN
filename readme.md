@@ -80,6 +80,9 @@ To test all the benchmarks
 $ cd TSSN/Deblock
 $ ./benchmark.sh 10 deblock_x10 tssn_ir 0   [degree model_dir model gpu_id]
 ```
+
+## Visual Results
+All the visual results including other methods can be downloaded from [Baidu Pan](https://pan.baidu.com/s/1AUosC5Jx5Z7VbZ74NgCa8A) (0rsb).
 ## Acknowledgements
 We thank [Sanghyun Son](https://github.com/thstkdgus35) for the code base in [`EDSR-PyTorch`](https://github.com/thstkdgus35/EDSR-PyTorch).
 
